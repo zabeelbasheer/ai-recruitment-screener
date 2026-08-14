@@ -10,7 +10,6 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-latest-green)
 ![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-orange)
 ![LangChain](https://img.shields.io/badge/LangChain-core%20%2B%20groq-purple)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 > **Synthetic demo data only.** No real candidate information, no real
 > Shearwater client names, no connection to any production hiring system.
@@ -125,6 +124,10 @@ year, employment-gap length, school name — none of which are inputs to
 scoring. If a threshold is crossed, a banner names the proxy field and
 recommends reviewing individual rationales. This is an explicit heuristic,
 not a compliance-grade bias audit.
+
+To see the fairness banner in this demo, upload all 5 `sample_data/resumes/rn_*.txt`
+files together against `sample_data/jds/registered_nurse.txt` — it's the only
+sample batch that meets the 5-candidate minimum the heuristic requires.
 
 ## Roadmap
 
