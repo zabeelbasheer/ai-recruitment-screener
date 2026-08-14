@@ -1,5 +1,6 @@
 import io
 
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -11,6 +12,8 @@ from batch import screen_batch
 from fairness import check_fairness
 from pipeline import screen_resume
 from requirements_extractor import extract_requirements
+
+load_dotenv()
 
 app = FastAPI(title="Zeta Health AI — Resume Screener")
 
