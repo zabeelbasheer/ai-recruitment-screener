@@ -159,4 +159,30 @@ document.getElementById("screen-form").addEventListener("submit", async (event) 
   }
 });
 
+async function loadHistory() {
+  const listEl = document.getElementById("history-list");
+  listEl.textContent = "Loading…";
+  try {
+    const runs = await api("/runs");
+    if (runs.length === 0) {
+      listEl.textContent = "No screening runs yet.";
+      return;
+    }
+    listEl.innerHTML = runs
+      .map(
+        (r) => `
+        <div class="scorecard">
+          <p><strong>${r.username}</strong> (${r.role}) — ${r.mode} — ${new Date(r.created_at).toLocaleString()}</p>
+          <p>${r.jd_text.slice(0, 120)}${r.jd_text.length > 120 ? "…" : ""}</p>
+          ${r.mode === "batch" ? `<button onclick="window.location.href='/export/csv/${r.id}'">Export CSV</button>` : ""}
+        </div>`
+      )
+      .join("");
+  } catch (err) {
+    listEl.textContent = err.message;
+  }
+}
+
+document.getElementById("refresh-history-btn").addEventListener("click", loadHistory);
+
 checkSession();
