@@ -9,6 +9,12 @@ async function api(path, options = {}) {
   return response.json();
 }
 
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str ?? "";
+  return div.innerHTML;
+}
+
 function showApp() {
   document.getElementById("login-section").classList.add("hidden");
   document.getElementById("app-nav").classList.remove("hidden");
@@ -72,19 +78,19 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 function renderScorecard(candidate) {
   const criteria = (candidate.criterion_scores || [])
-    .map((cs) => `<div class="criterion"><strong>${cs.name}</strong>: ${cs.score}/5 — ${cs.rationale}</div>`)
+    .map((cs) => `<div class="criterion"><strong>${cs.name}</strong>: ${cs.score}/5 — ${escapeHtml(cs.rationale)}</div>`)
     .join("");
   const failures = (candidate.hard_filter_failures || [])
-    .map((f) => `<div class="criterion">${f}</div>`)
+    .map((f) => `<div class="criterion">${escapeHtml(f)}</div>`)
     .join("");
   return `
     <div class="scorecard">
-      <h3>${candidate.candidate_name}</h3>
+      <h3>${escapeHtml(candidate.candidate_name)}</h3>
       <div class="fit-pct">${candidate.fit_pct}%</div>
       ${!candidate.hard_filter_passed ? `<p class="error">Failed hard filters</p>${failures}` : ""}
       ${criteria}
       <p><strong>Strengths:</strong> ${(candidate.strengths || []).join(", ") || "None"}</p>
-      <p><strong>Gaps:</strong> ${(candidate.gaps || []).join(", ") || "None"}</p>
+      <p><strong>Gaps:</strong> ${(candidate.gaps || []).map(escapeHtml).join(", ") || "None"}</p>
     </div>
   `;
 }
@@ -94,9 +100,9 @@ function renderBatchTable(result) {
     .map(
       (c, i) => `
       <tr data-index="${i}">
-        <td>${c.candidate_name}</td>
+        <td>${escapeHtml(c.candidate_name)}</td>
         <td>${c.fit_pct}%</td>
-        <td>${c.hard_filter_passed ? "Passed filters" : "Failed filters"}</td>
+        <td>${c.parse_failed ? "Could not process" : c.hard_filter_passed ? "Passed filters" : "Failed filters"}</td>
       </tr>`
     )
     .join("");
@@ -172,8 +178,8 @@ async function loadHistory() {
       .map(
         (r) => `
         <div class="scorecard">
-          <p><strong>${r.username}</strong> (${r.role}) — ${r.mode} — ${new Date(r.created_at).toLocaleString()}</p>
-          <p>${r.jd_text.slice(0, 120)}${r.jd_text.length > 120 ? "…" : ""}</p>
+          <p><strong>${escapeHtml(r.username)}</strong> (${r.role}) — ${r.mode} — ${new Date(r.created_at).toLocaleString()}</p>
+          <p>${escapeHtml(r.jd_text.slice(0, 120))}${r.jd_text.length > 120 ? "…" : ""}</p>
           ${r.mode === "batch" ? `<button onclick="window.location.href='/export/csv/${r.id}'">Export CSV</button>` : ""}
         </div>`
       )
