@@ -1,0 +1,8 @@
+Zeta Health AI — Medical Biller
+
+We need a Medical Biller to handle end-to-end claims submission for a US
+healthcare client, from charge entry through payer follow-up. Requires an
+active CPB certification and at least 3 years of relevant experience in
+medical billing. Must be comfortable with claims submission workflows across
+multiple payers, denial management, and basic AR follow-up. Attention to
+detail and familiarity with HIPAA-compliant handling of billing data required.

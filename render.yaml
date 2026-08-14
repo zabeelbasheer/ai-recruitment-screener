@@ -9,3 +9,9 @@ services:
         sync: false
       - key: MODEL_NAME
         value: llama-3.3-70b-versatile
+      - key: SESSION_SECRET_KEY
+        sync: false
+      - key: RECRUITER_PASSWORD
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
