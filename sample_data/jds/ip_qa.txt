@@ -1,0 +1,8 @@
+Zeta Health AI — Inpatient Coding Quality Auditor
+
+We are hiring an Inpatient Coding QA Auditor to perform second-level review of
+inpatient coding accuracy across a large coder pool. Requires an active CCS
+certification and at least 3 years of relevant experience. Direct coding
+quality audit experience is required, including DRG validation, coder
+scorecards, and feedback delivery. Strong written communication is essential
+since this role drives coder coaching.
