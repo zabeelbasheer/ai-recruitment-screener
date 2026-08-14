@@ -465,7 +465,7 @@ git commit -m "feat: add role-based auth with bcrypt password check and session 
 
 **Interfaces:**
 - Consumes: `auth.login`, `auth.read_session_token`, `auth.SESSION_MAX_AGE_SECONDS`, `db.init_db`
-- Produces: `main.app` (FastAPI instance), `main.COOKIE_NAME = "session"`, `main.get_current_user(request: Request) -> dict` (FastAPI dependency, raises 401), `main.require_admin(user: dict = Depends(get_current_user)) -> dict` (raises 403 if not admin)
+- Produces: `main.app` (FastAPI instance), `main.COOKIE_NAME = "session"`, `main.get_current_user(request: Request) -> dict` (FastAPI dependency, raises 401)
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -564,12 +564,6 @@ def get_current_user(request: Request) -> dict:
     if session is None:
         raise HTTPException(status_code=401, detail="Session expired or invalid")
     return session
-
-
-def require_admin(user: dict = Depends(get_current_user)) -> dict:
-    if user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    return user
 
 
 class LoginRequest(BaseModel):
@@ -2002,21 +1996,37 @@ Expected: FAIL with `AttributeError` / 404s — `/screen/single` etc. don't exis
 
 - [ ] **Step 3: Add screening routes to main.py**
 
-Append to `main.py` (after the existing `session_route` function, before end of file):
+First, update the import block at the **top** of `main.py` — replace:
+
+```python
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from pydantic import BaseModel
+
+import auth
+import db
+```
+
+with:
 
 ```python
 import io
 
-from fastapi import File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
+import auth
+import db
 import export
 from batch import screen_batch
 from fairness import check_fairness
 from pipeline import screen_resume
 from requirements_extractor import extract_requirements
+```
 
+`HTTPException` is already imported here from Task 4 — do not import it a second time. Then append the following route functions to the **end** of `main.py` (after the existing `session_route` function; nothing else follows it yet):
 
+```python
 @app.post("/screen/single")
 async def screen_single_route(
     jd_text: str = Form(...),
