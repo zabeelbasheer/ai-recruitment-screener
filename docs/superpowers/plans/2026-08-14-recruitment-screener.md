@@ -2091,7 +2091,7 @@ def list_runs_route(user: dict = Depends(get_current_user)):
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `uv run pytest tests/test_main_screening_routes.py -v`
-Expected: 7 passed
+Expected: 6 passed
 
 - [ ] **Step 5: Run the full test suite so far**
 
