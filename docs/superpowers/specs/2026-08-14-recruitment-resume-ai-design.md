@@ -260,3 +260,10 @@ All checked into `sample_data/`.
 | UI framework | FastAPI + vanilla JS (not Streamlit) — prior Streamlit rendering issues, matches `hr-policy-bot` and the existing stub's dependencies |
 | Auth | Full role-based auth (Recruiter / Admin), matching `ai-governance-audit-tool` |
 | Sample data role coverage | 8 roles, ~3-4 resumes each, rotating edge cases rather than full depth per role |
+
+## Caveman + Superpowers scoping
+
+- Before running /superpowers:brainstorm or /superpowers:write-plan, run /caveman off (or lite).
+  These phases depend on elaboration; full/ultra compression removes the reasoning that makes them useful.
+- Before running /superpowers:execute-plan, or for routine terminal work, run /caveman full.
+- If you catch yourself mid-brainstorm in compressed mode, stop and run /caveman off before continuing.
