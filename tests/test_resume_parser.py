@@ -51,6 +51,13 @@ def test_parse_resume_extracts_employment_gap():
     assert result["employment_gap_months"] == 6
 
 
+def test_parse_resume_ccs_p_does_not_also_report_bare_ccs():
+    text = "Name: Sam Diaz\nCCS-P\n5 years of relevant experience."
+    result = parse_resume(text.encode("utf-8"), "sam.txt")
+    assert "CCS-P" in result["certifications"]
+    assert "CCS" not in result["certifications"]
+
+
 def test_parse_resume_missing_fields_are_none():
     text = "Name: John Doe\nNo other structured facts here."
     result = parse_resume(text.encode("utf-8"), "john.txt")

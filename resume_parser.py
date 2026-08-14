@@ -55,7 +55,11 @@ def _extract_school(text: str) -> str | None:
 
 
 def _extract_certifications(text: str) -> list[str]:
-    return [cert for cert in CERT_KEYWORDS if re.search(rf"\b{re.escape(cert)}\b", text)]
+    return [
+        cert
+        for cert in CERT_KEYWORDS
+        if re.search(rf"\b{re.escape(cert)}\b(?!-)", text)
+    ]
 
 
 def _extract_employment_gap_months(text: str) -> int | None:
