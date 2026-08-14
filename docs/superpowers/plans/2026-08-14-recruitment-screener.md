@@ -684,6 +684,13 @@ def test_parse_resume_extracts_employment_gap():
     assert result["employment_gap_months"] == 6
 
 
+def test_parse_resume_ccs_p_does_not_also_report_bare_ccs():
+    text = "Name: Sam Diaz\nCCS-P\n5 years of relevant experience."
+    result = parse_resume(text.encode("utf-8"), "sam.txt")
+    assert "CCS-P" in result["certifications"]
+    assert "CCS" not in result["certifications"]
+
+
 def test_parse_resume_missing_fields_are_none():
     text = "Name: John Doe\nNo other structured facts here."
     result = parse_resume(text.encode("utf-8"), "john.txt")
@@ -772,7 +779,11 @@ def _extract_school(text: str) -> str | None:
 
 
 def _extract_certifications(text: str) -> list[str]:
-    return [cert for cert in CERT_KEYWORDS if re.search(rf"\b{re.escape(cert)}\b", text)]
+    return [
+        cert
+        for cert in CERT_KEYWORDS
+        if re.search(rf"\b{re.escape(cert)}\b(?!-)", text)
+    ]
 
 
 def _extract_employment_gap_months(text: str) -> int | None:
@@ -797,7 +808,7 @@ def parse_resume(file_bytes: bytes, filename: str) -> dict:
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `uv run pytest tests/test_resume_parser.py -v`
-Expected: 11 passed
+Expected: 12 passed
 
 - [ ] **Step 5: Commit**
 
