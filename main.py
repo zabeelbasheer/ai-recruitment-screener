@@ -1,4 +1,5 @@
 import io
+import os
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
@@ -22,6 +23,10 @@ COOKIE_NAME = "session"
 
 @app.on_event("startup")
 def on_startup() -> None:
+    if not os.environ.get("SESSION_SECRET_KEY"):
+        raise RuntimeError(
+            "SESSION_SECRET_KEY must be set — refusing to start with the insecure default."
+        )
     db.init_db()
 
 
