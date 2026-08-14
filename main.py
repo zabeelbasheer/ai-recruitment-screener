@@ -115,3 +115,8 @@ def list_runs_route(user: dict = Depends(get_current_user)):
     if user["role"] == "admin":
         return db.get_runs()
     return db.get_runs(username=user["name"])
+
+
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")

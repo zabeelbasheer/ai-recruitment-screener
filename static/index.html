@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zeta Health AI — Resume Screener</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div id="disclaimer-banner">
+  Synthetic demo data only — not used for real hiring decisions. No real candidate or client information.
+</div>
+
+<header id="app-header">
+  <h1>Zeta Health AI — Resume Screener</h1>
+  <p class="tagline">Clinical operations, intelligently governed.</p>
+  <div id="user-bar" class="hidden">
+    <span id="user-label"></span>
+    <button id="logout-btn">Log out</button>
+  </div>
+</header>
+
+<section id="login-section">
+  <h2>Log in</h2>
+  <form id="login-form">
+    <label>Your name <input type="text" id="login-name" required /></label>
+    <label>Role
+      <select id="login-role">
+        <option value="recruiter">Recruiter</option>
+        <option value="admin">Admin</option>
+      </select>
+    </label>
+    <label>Password <input type="password" id="login-password" required /></label>
+    <button type="submit">Log in</button>
+  </form>
+  <p id="login-error" class="error hidden"></p>
+</section>
+
+<nav id="app-nav" class="hidden">
+  <button data-tab="screen" class="tab-btn active">Screen Candidates</button>
+  <button data-tab="history" class="tab-btn">Run History</button>
+</nav>
+
+<section id="screen-tab" class="tab-panel hidden">
+  <h2>Screen candidates</h2>
+  <p>Upload one resume for a single scorecard, or several for a ranked batch.</p>
+  <form id="screen-form">
+    <label>Job description
+      <textarea id="jd-text" rows="8" required></textarea>
+    </label>
+    <label>Resume(s) (PDF or .txt)
+      <input type="file" id="resume-files" accept=".pdf,.txt" multiple required />
+    </label>
+    <button type="submit">Run screening</button>
+  </form>
+  <p id="screen-status" class="hidden"></p>
+  <div id="fairness-banner" class="hidden"></div>
+  <div id="results-area"></div>
+</section>
+
+<section id="history-tab" class="tab-panel hidden">
+  <h2>Run history</h2>
+  <button id="refresh-history-btn">Refresh</button>
+  <div id="history-list"></div>
+</section>
+
+<footer>
+  <p>Part of the <strong>Zeta Health AI</strong> portfolio of applied AI tools for healthcare BPO operations.</p>
+  <p class="tags">healthcare-ai · recruitment · groq · langchain · fastapi · python · healthcare-bpo</p>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

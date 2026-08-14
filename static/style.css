@@ -1,0 +1,113 @@
+:root {
+  --bg: #0f1a1f;
+  --panel: #16242b;
+  --text: #e6edf0;
+  --muted: #9db3ba;
+  --accent: #2c7a4a;
+  --danger: #c0392b;
+  --warn: #e67e22;
+  --border: #263840;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0 1.5rem 3rem;
+}
+
+#disclaimer-banner {
+  background: var(--warn);
+  color: #1a1200;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  margin: 0 -1.5rem 1rem;
+}
+
+header#app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tagline { color: var(--muted); margin: 0; }
+
+#user-bar { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; }
+
+.hidden { display: none !important; }
+
+nav#app-nav { display: flex; gap: 0.5rem; margin: 1rem 0; }
+
+.tab-btn {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tab-btn.active { background: var(--accent); }
+
+section, form {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+label { display: block; margin-bottom: 0.75rem; }
+
+input, textarea, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.error { color: var(--danger); }
+
+#fairness-banner {
+  background: var(--warn);
+  color: #1a1200;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: left; }
+tr[data-index] { cursor: pointer; }
+tr[data-index]:hover { background: var(--bg); }
+
+.scorecard {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+}
+
+.fit-pct { font-size: 2rem; font-weight: 700; }
+
+.criterion { margin: 0.5rem 0; padding: 0.5rem; background: var(--bg); border-radius: 4px; }
+
+footer { color: var(--muted); text-align: center; margin-top: 2rem; font-size: 0.85rem; }
