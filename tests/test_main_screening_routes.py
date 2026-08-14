@@ -86,6 +86,20 @@ def test_export_csv_returns_csv_for_batch_run(monkeypatch, tmp_path):
     assert response.headers["content-type"].startswith("text/csv")
 
 
+def test_export_csv_rejects_cross_recruiter_access(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path, name="Jane")
+    files = [
+        ("resumes", ("a.txt", io.BytesIO(b"Name: Candidate A\n1 years of relevant experience."), "text/plain")),
+    ]
+    batch_response = client.post("/screen/batch", data={"jd_text": "Looking for a coder."}, files=files)
+    run_id = batch_response.json()["run_id"]
+
+    other_client = TestClient(main.app)
+    other_client.post("/login", json={"name": "Bob", "role": "recruiter", "password": "recruit-pw"})
+    response = other_client.get(f"/export/csv/{run_id}")
+    assert response.status_code == 403
+
+
 def test_runs_recruiter_only_sees_own(monkeypatch, tmp_path):
     client = _client(monkeypatch, tmp_path, name="Jane")
     resume_file = io.BytesIO(b"Name: Jane Doe\n5 years of relevant experience.")
