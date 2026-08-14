@@ -54,8 +54,8 @@ def _parse_json_response(raw: str) -> dict:
 
 
 def score_criterion(jd_text: str, resume_text: str, criterion: dict, llm=None) -> CriterionScore:
-    llm = llm or get_llm()
     try:
+        llm = llm or get_llm()
         prompt_value = PROMPT.format_prompt(
             jd_text=jd_text,
             resume_text=resume_text,

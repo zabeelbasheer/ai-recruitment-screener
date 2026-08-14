@@ -82,7 +82,13 @@ async def screen_single_route(
     user: dict = Depends(get_current_user),
 ):
     resume_bytes = await resume.read()
-    requirements = extract_requirements(jd_text)
+    try:
+        requirements = extract_requirements(jd_text)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Could not analyze the job description: {exc}",
+        )
     result = screen_resume(jd_text, requirements, resume_bytes, resume.filename)
     run_id = db.save_run(user["name"], user["role"], jd_text, "single", result)
     return {"run_id": run_id, "result": result}
@@ -95,7 +101,14 @@ async def screen_batch_route(
     user: dict = Depends(get_current_user),
 ):
     resume_items = [(await f.read(), f.filename) for f in resumes]
-    batch_result = screen_batch(jd_text, resume_items)
+    try:
+        requirements = extract_requirements(jd_text)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Could not analyze the job description: {exc}",
+        )
+    batch_result = screen_batch(jd_text, resume_items, requirements=requirements)
     batch_result["fairness_flag"] = check_fairness(batch_result["candidates"])
     run_id = db.save_run(user["name"], user["role"], jd_text, "batch", batch_result)
     return {"run_id": run_id, "result": batch_result}
