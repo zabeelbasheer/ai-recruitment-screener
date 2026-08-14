@@ -2486,7 +2486,7 @@ Create `static/index.html`:
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Zeta Health AI — Resume Screener</title>
-<link rel="stylesheet" href="/static/style.css" />
+<link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 <div id="disclaimer-banner">
@@ -2551,7 +2551,7 @@ Create `static/index.html`:
   <p class="tags">healthcare-ai · recruitment · groq · langchain · fastapi · python · healthcare-bpo</p>
 </footer>
 
-<script src="/static/app.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>
 ```
@@ -2767,6 +2767,8 @@ app.mount("/", StaticFiles(directory="static", html=True), name="static")
 ```
 
 This must stay the last line in `main.py` — Starlette matches routes in registration order, and the mount would otherwise shadow the API routes registered after it.
+
+Mounting `StaticFiles(directory="static", html=True)` at `"/"` serves every file inside `static/` relative to the root — `static/style.css` at `/style.css`, `static/app.js` at `/app.js`, `static/index.html` at `/` (via `html=True`'s index-file behavior) — not under a `/static/...` prefix. `index.html`'s own `<link>`/`<script>` tags reference `/style.css` and `/app.js` accordingly (already reflected above); do not prefix them with `/static/`.
 
 - [ ] **Step 5: Manual verification**
 
