@@ -70,4 +70,93 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
   });
 });
 
+function renderScorecard(candidate) {
+  const criteria = (candidate.criterion_scores || [])
+    .map((cs) => `<div class="criterion"><strong>${cs.name}</strong>: ${cs.score}/5 — ${cs.rationale}</div>`)
+    .join("");
+  const failures = (candidate.hard_filter_failures || [])
+    .map((f) => `<div class="criterion">${f}</div>`)
+    .join("");
+  return `
+    <div class="scorecard">
+      <h3>${candidate.candidate_name}</h3>
+      <div class="fit-pct">${candidate.fit_pct}%</div>
+      ${!candidate.hard_filter_passed ? `<p class="error">Failed hard filters</p>${failures}` : ""}
+      ${criteria}
+      <p><strong>Strengths:</strong> ${(candidate.strengths || []).join(", ") || "None"}</p>
+      <p><strong>Gaps:</strong> ${(candidate.gaps || []).join(", ") || "None"}</p>
+    </div>
+  `;
+}
+
+function renderBatchTable(result) {
+  const rows = result.candidates
+    .map(
+      (c, i) => `
+      <tr data-index="${i}">
+        <td>${c.candidate_name}</td>
+        <td>${c.fit_pct}%</td>
+        <td>${c.hard_filter_passed ? "Passed filters" : "Failed filters"}</td>
+      </tr>`
+    )
+    .join("");
+  return `
+    <table>
+      <thead><tr><th>Candidate</th><th>Fit %</th><th>Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div id="scorecard-detail"></div>
+  `;
+}
+
+let lastRunId = null;
+let lastBatchResult = null;
+
+document.getElementById("screen-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const statusEl = document.getElementById("screen-status");
+  const resultsArea = document.getElementById("results-area");
+  const fairnessBanner = document.getElementById("fairness-banner");
+  fairnessBanner.classList.add("hidden");
+  resultsArea.innerHTML = "";
+  statusEl.textContent = "Screening in progress…";
+  statusEl.classList.remove("hidden");
+
+  const jdText = document.getElementById("jd-text").value;
+  const files = document.getElementById("resume-files").files;
+  const formData = new FormData();
+  formData.append("jd_text", jdText);
+
+  try {
+    let payload;
+    if (files.length === 1) {
+      formData.append("resume", files[0]);
+      payload = await api("/screen/single", { method: "POST", body: formData });
+      resultsArea.innerHTML = renderScorecard(payload.result);
+    } else {
+      Array.from(files).forEach((f) => formData.append("resumes", f));
+      payload = await api("/screen/batch", { method: "POST", body: formData });
+      lastRunId = payload.run_id;
+      lastBatchResult = payload.result;
+      if (payload.result.fairness_flag) {
+        fairnessBanner.textContent = payload.result.fairness_flag.message;
+        fairnessBanner.classList.remove("hidden");
+      }
+      resultsArea.innerHTML = renderBatchTable(payload.result) + `<button id="export-csv-btn">Export CSV</button>`;
+      document.querySelectorAll("#results-area tr[data-index]").forEach((row) => {
+        row.addEventListener("click", () => {
+          const candidate = lastBatchResult.candidates[Number(row.dataset.index)];
+          document.getElementById("scorecard-detail").innerHTML = renderScorecard(candidate);
+        });
+      });
+      document.getElementById("export-csv-btn").addEventListener("click", () => {
+        window.location.href = `/export/csv/${lastRunId}`;
+      });
+    }
+    statusEl.classList.add("hidden");
+  } catch (err) {
+    statusEl.textContent = err.message;
+  }
+});
+
 checkSession();
