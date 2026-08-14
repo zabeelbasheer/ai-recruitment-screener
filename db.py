@@ -90,6 +90,36 @@ def get_runs(username: str | None = None, db_path: Path | None = None) -> list[d
         conn.close()
 
 
+def get_runs_summary(username: str | None = None, db_path: Path | None = None) -> list[dict]:
+    db_path = db_path or DB_PATH
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    try:
+        columns = "id, username, role, jd_text, mode, created_at"
+        if username is None:
+            rows = conn.execute(
+                f"SELECT {columns} FROM screening_runs ORDER BY created_at DESC"
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                f"SELECT {columns} FROM screening_runs WHERE username = ? ORDER BY created_at DESC",
+                (username,),
+            ).fetchall()
+        return [
+            {
+                "id": r["id"],
+                "username": r["username"],
+                "role": r["role"],
+                "jd_text": r["jd_text"],
+                "mode": r["mode"],
+                "created_at": r["created_at"],
+            }
+            for r in rows
+        ]
+    finally:
+        conn.close()
+
+
 def get_run(run_id: int, db_path: Path | None = None) -> dict | None:
     db_path = db_path or DB_PATH
     conn = sqlite3.connect(db_path)

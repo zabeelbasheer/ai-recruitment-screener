@@ -48,3 +48,34 @@ def test_get_run_missing_returns_none(tmp_path):
     path = tmp_path / "test.db"
     db.init_db(path)
     assert db.get_run(999, db_path=path) is None
+
+
+def test_get_runs_summary_returns_only_summary_fields(tmp_path):
+    path = tmp_path / "test.db"
+    db.init_db(path)
+    run_id = db.save_run(
+        "jane",
+        "recruiter",
+        "JD text",
+        "single",
+        {"fit_pct": 80, "resume_meta": {"raw_text": "sensitive resume text"}},
+        db_path=path,
+    )
+    summaries = db.get_runs_summary(db_path=path)
+    assert len(summaries) == 1
+    summary = summaries[0]
+    assert set(summary.keys()) == {"id", "username", "role", "jd_text", "mode", "created_at"}
+    assert "result" not in summary
+    assert summary["id"] == run_id
+    assert summary["username"] == "jane"
+    assert summary["jd_text"] == "JD text"
+
+
+def test_get_runs_summary_filters_by_username(tmp_path):
+    path = tmp_path / "test.db"
+    db.init_db(path)
+    db.save_run("jane", "recruiter", "JD 1", "single", {}, db_path=path)
+    db.save_run("bob", "recruiter", "JD 2", "single", {}, db_path=path)
+    jane_summaries = db.get_runs_summary(username="jane", db_path=path)
+    assert len(jane_summaries) == 1
+    assert jane_summaries[0]["username"] == "jane"

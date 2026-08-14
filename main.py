@@ -134,8 +134,8 @@ def export_csv_route(run_id: int, user: dict = Depends(get_current_user)):
 @app.get("/runs")
 def list_runs_route(user: dict = Depends(get_current_user)):
     if user["role"] == "admin":
-        return db.get_runs()
-    return db.get_runs(username=user["name"])
+        return db.get_runs_summary()
+    return db.get_runs_summary(username=user["name"])
 
 
 from fastapi.staticfiles import StaticFiles
