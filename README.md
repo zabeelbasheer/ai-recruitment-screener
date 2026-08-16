@@ -113,8 +113,8 @@ Coding, IP QA, CDI, and Utilization Management — each resume engineered to
 exercise a specific case: strong fit, missing certification, keyword-stuffed,
 career gap, wrong specialty, borderline years of experience, overqualified,
 or a fairness-check bait case (older graduation year). See
-`docs/superpowers/plans/2026-08-14-recruitment-screener.md` (Task 15) for the
-full breakdown.
+[`docs/design/spec.md`](docs/design/spec.md#8-sample-data) for the full
+breakdown.
 
 ## Fairness Check
 
